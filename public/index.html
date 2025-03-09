@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>-</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>VAD 기반 STT 데모</h1>
+        <div class="card">
+            <div class="server-status">
+                <span id="server-indicator" class="status-dot"></span>
+                <span id="server-status-text">서버 상태 확인 중...</span>
+            </div>
+            
+            <div class="status-container">
+                <div id="status-indicator" class="status-indicator"></div>
+                <p id="status-text">대기 중...</p>
+            </div>
+            
+            <div class="controls">
+                <button id="start-btn" class="btn">시작</button>
+                <button id="stop-btn" class="btn" disabled>중지</button>
+                <select id="language-select" class="language-select">
+                    <option value="ko-KR">한국어</option>
+                    <option value="en-US">영어 (미국)</option>
+                    <option value="ja-JP">일본어</option>
+                    <option value="zh-CN">중국어 (간체)</option>
+                    <option value="zh-TW">중국어 (번체)</option>
+                    <option value="es-ES">스페인어</option>
+                    <option value="fr-FR">프랑스어</option>
+                    <option value="de-DE">독일어</option>
+                </select>
+                <button id="settings-btn" class="btn btn-secondary">설정</button>
+            </div>
+            
+            <!-- 음성 히스토리 컨테이너 -->
+            <div class="voice-history-container">
+                <h2>음성 히스토리</h2>
+                <div class="history-tabs">
+                    <button class="tab active" data-tab="local">로컬 히스토리</button>
+                    <button class="tab" data-tab="server">서버 히스토리</button>
+                </div>
+                <div id="local-history" class="tab-content active">
+                    <div id="voice-history" class="voice-history">
+                        <p class="empty-history">아직 감지된 음성이 없습니다.</p>
+                    </div>
+                </div>
+                <div id="server-history" class="tab-content">
+                    <div id="server-voice-history" class="voice-history">
+                        <p class="empty-history">서버에 저장된 음성이 없습니다.</p>
+                    </div>
+                    <button id="refresh-server-btn" class="btn btn-secondary">새로고침</button>
+                </div>
+                <button id="clear-history-btn" class="btn btn-secondary" disabled>히스토리 비우기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VAD 설정 모달 -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>VAD 설정</h2>
+                <span id="close-modal" class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="setting-item">
+                    <label for="threshold">감지 임계값:</label>
+                    <input type="range" id="threshold" min="0" max="1" step="0.05" value="0.75">
+                    <span id="threshold-value">0.75</span>
+                </div>
+                <div class="setting-item">
+                    <label for="minSpeechFrames">최소 음성 프레임:</label>
+                    <input type="range" id="minSpeechFrames" min="1" max="20" step="1" value="5">
+                    <span id="minSpeechFrames-value">5</span>
+                </div>
+                <div class="setting-item">
+                    <label for="positiveSpeechThreshold">양성 음성 임계값:</label>
+                    <input type="range" id="positiveSpeechThreshold" min="0" max="1" step="0.05" value="0.5">
+                    <span id="positiveSpeechThreshold-value">0.5</span>
+                </div>
+                <div class="setting-item">
+                    <label for="negativeSpeechThreshold">음성 임계값:</label>
+                    <input type="range" id="negativeSpeechThreshold" min="0" max="1" step="0.05" value="0.5">
+                    <span id="negativeSpeechThreshold-value">0.5</span>
+                </div>
+                <div class="setting-item">
+                    <label for="preSpeechPadFrames">음성 이전 패딩 프레임:</label>
+                    <input type="range" id="preSpeechPadFrames" min="0" max="20" step="1" value="10">
+                    <span id="preSpeechPadFrames-value">10</span>
+                </div>
+                <div class="setting-checkbox">
+                    <input type="checkbox" id="save-to-server">
+                    <label for="save-to-server">음성 데이터를 서버에 자동 저장</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-settings" class="btn">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ONNX Runtime 및 VAD 라이브러리 -->
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.14.0/dist/ort.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.22/dist/bundle.min.js"></script>
+    <script src="scripts/api.js"></script>
+    <script src="scripts/script.js"></script>
+</body>
+</html> 
